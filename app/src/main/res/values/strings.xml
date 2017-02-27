@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyDoorDash</string>
+    <string name="favorites">My Favorites</string>
+    <string name="add_favorite">Added to Favorites</string>
+    <string name="remove_favorite">Removed from Favorites</string>
+    <string name="no_favorites_items">No Favorites</string>
+    <string name="no_favorites_msg">Please click on favorite button to save</string>
+</resources>
