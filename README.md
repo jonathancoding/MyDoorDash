@@ -1,7 +1,8 @@
 # MyDoorDash
 This is my own food delivery app using DD api. :)
+The codebase will be updated as this is the only init version. 
 
-This is the init version of a mini DoorDash app.
+Youtube Demo: https://www.youtube.com/watch?v=mnzgdmEKw6I
 
 Libaries that I used:
 * OKHttp for network calls
@@ -16,6 +17,10 @@ Code Structure:
 
 Patterns:
 * Viewholder Pattern for optimizing scrolling
+
+Benefits:
+* Supports data/view state retention during rotation
+* Supports save to my favorite functionality 
 
 Caveats:
 * UI is not that beautiful due to time constraints, will refactor later
