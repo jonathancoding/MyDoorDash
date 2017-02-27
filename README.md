@@ -30,4 +30,4 @@ Caveats:
 * RxJava/Android is not available yet due to time constraints
 
 
-Screenshots are here:https://github.com/JonathanGitHub/MyDoorDash/issues/1
+Screenshots are here: https://github.com/JonathanGitHub/MyDoorDash/issues/1
