@@ -10,6 +10,13 @@ import java.util.ArrayList;
  */
 
 public class Restaurant implements Parcelable {
+
+    public static final String ID_KEY = "id";
+    public static final String NAME_KEY = "name";
+    public static final String DESCRIPTION_KEY = "description";
+    public static final String ADDRESS_KEY = "printable_address";
+    public static final String COVER_IMG_URL_KEY = "cover_img_url";
+
     private String id;
     private String name;
     private String description;

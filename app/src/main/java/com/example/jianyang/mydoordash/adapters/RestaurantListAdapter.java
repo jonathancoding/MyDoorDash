@@ -5,16 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jianyang.mydoordash.R;
 import com.example.jianyang.mydoordash.models.Restaurant;
 import com.example.jianyang.mydoordash.models.SharedPreference;
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,6 +22,8 @@ import java.util.ArrayList;
 
 public class RestaurantListAdapter extends ArrayAdapter<Restaurant>{
 
+    public static final String GREY_KEY = "grey";
+    public static final String RED_KEY = "red";
     private Context context;
     private ArrayList<Restaurant> mResturantList;
     private SharedPreference sharedPreference;
@@ -54,6 +53,8 @@ public class RestaurantListAdapter extends ArrayAdapter<Restaurant>{
         return i;
     }
 
+
+    //Using sweet ViewHolderPattern to optimize the scrolling of listview experience
 
     static class ViewHolderItem
     {
@@ -100,23 +101,23 @@ public class RestaurantListAdapter extends ArrayAdapter<Restaurant>{
 
         if (checkFavoriteItem(mResturantList.get(i))) {
             viewHolder.favoriteButton.setImageResource(R.drawable.heart_red);
-            viewHolder.favoriteButton.setTag("red");
+            viewHolder.favoriteButton.setTag(RED_KEY);
         } else {
             viewHolder.favoriteButton.setImageResource(R.drawable.heart_grey);
-            viewHolder.favoriteButton.setTag("grey");
+            viewHolder.favoriteButton.setTag(GREY_KEY);
         }
 
         viewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String tag = view.getTag().toString();
-                if (tag.equalsIgnoreCase("grey")) {
+                if (tag.equalsIgnoreCase(GREY_KEY)) {
                     sharedPreference.addFavorite(context, mResturantList.get(i));
-                    viewHolder.favoriteButton.setTag("red");
+                    viewHolder.favoriteButton.setTag(RED_KEY);
                     viewHolder.favoriteButton.setImageResource(R.drawable.heart_red);
                 } else {
                     sharedPreference.removeFavorite(context, mResturantList.get(i));
-                    viewHolder.favoriteButton.setTag("grey");
+                    viewHolder.favoriteButton.setTag(GREY_KEY);
                     viewHolder.favoriteButton.setImageResource(R.drawable.heart_grey);
                 }
             }
@@ -127,13 +128,12 @@ public class RestaurantListAdapter extends ArrayAdapter<Restaurant>{
     }
 
 
+    //check if restaurant is saved in my favorite list or not
     public boolean checkFavoriteItem(Restaurant restaurant) {
         boolean check = false;
         ArrayList<Restaurant> favorites = sharedPreference.getFavorites(context);
         if (favorites != null) {
             for (Restaurant restaurant1 : favorites) {
-                System.out.println("restuarant1: checking" + restaurant1.getId());
-                System.out.println("restuarant: checking" + restaurant.getId());
                 if (restaurant1.equals(restaurant)) {
                     check = true;
                     break;

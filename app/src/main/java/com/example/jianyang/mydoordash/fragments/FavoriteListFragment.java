@@ -85,6 +85,7 @@ public class FavoriteListFragment extends Fragment {
     }
 
 
+    //Show alert dialog if there is no favorite restaurant
     public void showAlert(String title, String message) {
         if (activity != null && !activity.isFinishing()) {
             AlertDialog alertDialog = new AlertDialog.Builder(activity)

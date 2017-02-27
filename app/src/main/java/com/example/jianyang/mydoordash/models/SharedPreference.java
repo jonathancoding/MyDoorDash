@@ -33,10 +33,6 @@ public class SharedPreference {
         String jsonFavorites = gson.toJson(favorites);
         editor.putString(FAVORITES, jsonFavorites);
 
-        if (favorites != null && !favorites.isEmpty()) {
-            System.out.println("restuarant: saving" + favorites.get(0).getId());
-        }
-
         editor.commit();
     }
 
@@ -45,7 +41,6 @@ public class SharedPreference {
         if (favorites == null)
             favorites = new ArrayList<>();
         favorites.add(restaurant);
-        System.out.println("restuarant: adding" + restaurant.getId());
         saveFavorites(context, favorites);
     }
 
@@ -53,7 +48,6 @@ public class SharedPreference {
         ArrayList<Restaurant> favorites = getFavorites(context);
         if (favorites != null) {
             favorites.remove(restaurant);
-            System.out.println("restuarant: removing" + restaurant.getId());
             saveFavorites(context, favorites);
         }
     }

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -39,7 +38,9 @@ import okhttp3.Response;
 
 public class RestaurantListFragment extends Fragment{
 
+    public static final String RESTAURANT_ARRAY_LIST_KEY = "restaurantArrayList";
     public static final String TAG = "RestaurantListFragment";
+
     private ArrayList<Restaurant> restaurantArrayList = new ArrayList<>();
     private SharedPreference sharedPreference;
     private ListView restaurantListView;
@@ -76,7 +77,6 @@ public class RestaurantListFragment extends Fragment{
         } else {
             RestaurantListAdapter adapter = new RestaurantListAdapter(getActivity(), restaurantArrayList);
             restaurantListView.setAdapter(adapter);
-//            restaurantListView.setOnItemClickListener(new OnItemClickListener());
         }
 
 
@@ -93,7 +93,7 @@ public class RestaurantListFragment extends Fragment{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("restaurantArrayList", restaurantArrayList);
+        outState.putParcelableArrayList(RESTAURANT_ARRAY_LIST_KEY, restaurantArrayList);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class RestaurantListFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            restaurantArrayList = savedInstanceState.getParcelableArrayList("restaurantArrayList");
+            restaurantArrayList = savedInstanceState.getParcelableArrayList(RESTAURANT_ARRAY_LIST_KEY);
         }
 
     }
@@ -113,7 +113,14 @@ public class RestaurantListFragment extends Fragment{
         super.onResume();
     }
 
+    /*
+      Using OKHttp client library to make network call, and the client will create separate worker thread
+      Remember to update UI from UI thread, you cannot update UI from worker thread, hence using
+      activity.runOnUiThread
+     */
+
     private void getRestaurantListFromAPI() {
+
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -133,8 +140,6 @@ public class RestaurantListFragment extends Fragment{
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                // ... check for failure using `isSuccessful` before proceeding
-                // Read data on the worker thread
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -144,41 +149,31 @@ public class RestaurantListFragment extends Fragment{
 
                 try {
                     String responseData = response.body().string();
-
-                    System.out.println("jonathan" + responseData);
                     JSONArray results = new JSONArray(responseData);
-
-                    System.out.println("jonathan" + results.toString());
-
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject object = results.getJSONObject(i);
                         Restaurant restaurant = new Restaurant();
-                        restaurant.setId(object.getString("id"));
-                        restaurant.setCover_img_url(object.getString("cover_img_url"));
-                        restaurant.setDescription(object.getString("description"));
-                        // loop array
+                        restaurant.setId(object.getString(Restaurant.ID_KEY));
+                        restaurant.setCover_img_url(object.getString(Restaurant.COVER_IMG_URL_KEY));
+                        restaurant.setDescription(object.getString(Restaurant.DESCRIPTION_KEY));
+
                         JSONObject address =  object.getJSONObject("address");
                         JSONObject business =  object.getJSONObject("business");
-                        restaurant.setAddress(address.getString("printable_address"));
-                        restaurant.setName(business.getString("name"));
+                        restaurant.setAddress(address.getString(Restaurant.ADDRESS_KEY));
+                        restaurant.setName(business.getString(Restaurant.NAME_KEY));
 
                         restaurantArrayList.add(restaurant);
                     }
 
-
-                    System.out.println("jonathan" + restaurantArrayList.toString());
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // If there is any movies
                             if (restaurantArrayList.size() > 0) {
-                                // Adding items to gridView
                                 RestaurantListAdapter adapter = new RestaurantListAdapter(getActivity(), restaurantArrayList);
                                 restaurantListView.setAdapter(adapter);
                                 restaurantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                        //
                                         Toast.makeText(activity, "More features will be added soon!", Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -191,39 +186,11 @@ public class RestaurantListFragment extends Fragment{
                         }
                     });
 
-
                 } catch (JSONException e) {
-
+                    Toast.makeText(getActivity(), "Something is wrong with backend server!", Toast.LENGTH_LONG)
+                            .show();
                 }
-
             }
         });
-
     }
-
-//    class OnItemClickListener implements AdapterView.OnItemClickListener{
-//
-//        @Override
-//        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            Restaurant restaurant = (Restaurant) adapterView.getItemAtPosition(i);
-//            Toast.makeText(activity, restaurant.toString(), Toast.LENGTH_LONG).show();
-//        }
-//    }
-
-
-//
-//        ImageButton button = (ImageButton) view.findViewById(R.id.imageButton_favorite);
-//
-//        String tag = button.getTag().toString();
-//        if (tag.equalsIgnoreCase("grey")) {
-//            sharedPreference.addFavorite(activity, restaurantArrayList.get(i));
-//
-//            button.setTag("red");
-//            button.setImageResource(R.drawable.heart_red);
-//        } else {
-//            sharedPreference.removeFavorite(activity, restaurantArrayList.get(i));
-//            button.setTag("grey");
-//            button.setImageResource(R.drawable.heart_grey);
-//        }
-
 }
