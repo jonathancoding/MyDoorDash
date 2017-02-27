@@ -21,8 +21,12 @@ Patterns:
 Benefits:
 * Supports data/view state retention during rotation
 * Supports save to my favorite functionality 
+* Layout UI is reusale for restaurant list nearby page and my favorite list page
+* One activity, two Fragments
 
 Caveats:
 * UI is not that beautiful due to time constraints, will refactor later
 * Network API wrapper is not available yet due to time constraints
 * RxJava/Android is not available yet due to time constraints
+
+
